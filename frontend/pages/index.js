@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
 import FormDialog from "../components/Dialog";
 const Home = () => {
@@ -23,7 +24,9 @@ const Home = () => {
     setShowData(data);
   }, [data]);
   const fetchData = () => {
-    // TODO: Fetch data from API
+    axios.get("/api/internship").then((res) => {
+      setData(res.data);
+    });
   };
   const handleSearch = () => {
     const searchData = data.filter(
@@ -35,8 +38,11 @@ const Home = () => {
     );
     setShowData(searchData);
   };
-  const handleClose = () => {
+  const handleClose = ({ fetched = false }) => {
     setDialog(false);
+    if (fetched) {
+      fetchData();
+    }
   };
   const renderData = () => {
     return showData.length == 0 ? (

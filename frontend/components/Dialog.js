@@ -9,27 +9,27 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Fragment, useEffect, useState } from "react";
-
+import axios from "axios";
 const Form = ({ dialog, handleClose }) => {
   const [companyName, setCompanyName] = useState("");
   const [positions, setPositions] = useState([]);
   const [position, setPosition] = useState("");
   const [url, setUrl] = useState("");
-  const [closeDate, setCloseDate] = useState(null);
+  const [closeDate, setCloseDate] = useState(undefined);
 
   const handleAdd = () => {
     if (companyName.length > 0 && url.length > 0 && positions.length > 0) {
-      // TODO: call API
       const data = {
-        companyName,
+        company_name: companyName,
         positions,
         url,
-        closeDate,
+        close_date:
+          closeDate == undefined ? null : new Date(closeDate).toISOString(),
       };
-      console.log(data);
-
-      clearData();
-      handleClose();
+      axios.post("/api/internship", data).then((res) => {
+        clearData();
+        handleClose({fetched:true});
+      });
     }
   };
   const clearData = () => {
@@ -37,7 +37,7 @@ const Form = ({ dialog, handleClose }) => {
     setPositions([]);
     setPosition("");
     setUrl("");
-    setCloseDate(null);
+    setCloseDate(undefined);
   };
   const handleKeyDown = (key) => {
     if (key == "Enter") {
@@ -62,7 +62,6 @@ const Form = ({ dialog, handleClose }) => {
         <DialogContent>
           <span>Please add valid and reliable data for your own benefit.</span>
           <Box>
-            {positions.toString()}
             <TextField
               fullWidth
               InputLabelProps={{ shrink: true }}
