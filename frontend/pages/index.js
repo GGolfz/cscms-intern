@@ -1,4 +1,6 @@
+import { Dialog, DialogTitle } from "@material-ui/core";
 import { Fragment, useEffect, useState } from "react";
+import Form from "../components/Form";
 const Home = () => {
   const data = [
     {
@@ -18,7 +20,7 @@ const Home = () => {
     return showData.map((item) => {
       return (
         <tr key={item.id}>
-          <td>{item.name}</td>
+          <td>{item.company_name}</td>
           <td>
             <ul>
               {item.position.map((e, index) => (
@@ -36,9 +38,19 @@ const Home = () => {
   };
   return (
     <Fragment>
-      
+      <Dialog open={dialog} onClose={() => setDialog(false)}>
+        <DialogTitle title="Add Internship" />
+        <Form />
+      </Dialog>
       <div>Search and filter bar</div>
-      
+      <div>
+        <div>
+          <h1>Internship List</h1>
+        </div>
+        <div>
+          <button onClick={() => setDialog(true)}>Add</button>
+        </div>
+      </div>
       <div>
         <table>
           <tr>
