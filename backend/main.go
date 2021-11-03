@@ -115,7 +115,7 @@ func main() {
 		return ctx.JSON(internships)
 	})
 
-	app.Get("/api/position", func(ctx *fiber.Ctx) error {
+	app.Get("/api/positions", func(ctx *fiber.Ctx) error {
 		var positions []model.Position
 
 		if tx := db.Find(&positions); tx.Error != nil {
