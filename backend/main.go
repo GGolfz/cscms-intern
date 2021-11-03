@@ -115,6 +115,18 @@ func main() {
 		return ctx.JSON(internships)
 	})
 
+	app.Get("/api/position", func(ctx *fiber.Ctx) error {
+		var positions []model.Position
+
+		if tx := db.Find(&positions); tx.Error != nil {
+			if !errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+				logger.Error("cannot get positions in db", tx.Error.Error())
+				return fiber.NewError(fiber.StatusInternalServerError, "cannot get positions in db", tx.Error.Error())
+			}
+		}
+		return ctx.JSON(positions)
+	})
+
 	err = app.Listen(":5000")
 	assertErrorAndExitIfFound(logger, "unable to listen", err)
 
