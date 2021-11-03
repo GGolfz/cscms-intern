@@ -58,6 +58,7 @@ func main() {
 		internshipBody := new(dto.CreateInternshipDto)
 
 		if err := ctx.BodyParser(internshipBody); err != nil {
+			logger.Error("cannot parse request body", err.Error())
 			return fiber.NewError(fiber.StatusBadRequest, "cannot parse request body", err.Error())
 		}
 
@@ -69,10 +70,12 @@ func main() {
 			tx := db.Where(position).First(&foundPosition)
 			if tx.Error != nil {
 				if !errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+					logger.Error("cannot query position data from db", err.Error())
 					return fiber.NewError(fiber.StatusInternalServerError, "cannot query position data from db", err.Error())
 				}
 				// New position
 				if tx := db.Create(position); tx.Error != nil {
+					logger.Error("cannot query position data from db", err.Error())
 					return fiber.NewError(fiber.StatusInternalServerError, "cannot query position data from db", err.Error())
 				}
 				positions[i] = position
@@ -93,6 +96,7 @@ func main() {
 
 		tx := db.Create(internship)
 		if tx.Error != nil {
+			logger.Error("cannot create record in db", tx.Error.Error())
 			return fiber.NewError(fiber.StatusInternalServerError, "cannot create record in db", tx.Error.Error())
 		}
 
@@ -104,6 +108,7 @@ func main() {
 
 		if tx := db.Preload("Positions").Find(&internships); tx.Error != nil {
 			if !errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+				logger.Error("cannot get internship in db", tx.Error.Error())
 				return fiber.NewError(fiber.StatusInternalServerError, "cannot get internship in db", tx.Error.Error())
 			}
 		}
