@@ -1,13 +1,21 @@
-import { Dialog, DialogTitle } from "@material-ui/core";
-import { Fragment, useEffect, useState } from "react";
-import Form from "../components/Form";
+import {
+  Button,
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
+import { Fragment, useEffect, useRef, useState } from "react";
+import FormDialog from "../components/Dialog";
 const Home = () => {
   const data = [
     {
       id: 1,
-      name: "Google",
+      company_name: "Google",
       url: "https://www.google.com",
-      position: ["Full Stack Developer", "ML Engineer"],
+      positions: ["Full Stack Developer", "ML Engineer"],
       close_date: null,
     },
   ];
@@ -15,53 +23,64 @@ const Home = () => {
   const [dialog, setDialog] = useState(false);
   useEffect(() => {
     setShowData(data);
-  }, [data]);
+  }, []);
+  const handleClose = () => {
+    setDialog(false);
+  };
   const renderData = () => {
     return showData.map((item) => {
       return (
-        <tr key={item.id}>
-          <td>{item.company_name}</td>
-          <td>
+        <TableRow key={item.id}>
+          <TableCell>{item.company_name}</TableCell>
+          <TableCell>
             <ul>
-              {item.position.map((e, index) => (
+              {item.positions.map((e, index) => (
                 <li key={index}>{e}</li>
               ))}
             </ul>
-          </td>
-          <td>
+          </TableCell>
+          <TableCell>
             <a href={item.url}>Link</a>
-          </td>
-          <td>{item.close_date ?? "unknown"}</td>
-        </tr>
+          </TableCell>
+          <TableCell>{item.close_date ?? "unknown"}</TableCell>
+        </TableRow>
       );
     });
   };
   return (
     <Fragment>
-      <Dialog open={dialog} onClose={() => setDialog(false)}>
-        <DialogTitle title="Add Internship" />
-        <Form />
-      </Dialog>
-      <div>Search and filter bar</div>
-      <div>
-        <div>
+      <Container>
+        <FormDialog dialog={dialog} handleClose={handleClose} />
+
+        <div>Search and filter bar</div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <h1>Internship List</h1>
+          <Button
+            variant="outlined"
+            onClick={() => setDialog(true)}
+            color="primary"
+          >
+            Add
+          </Button>
         </div>
-        <div>
-          <button onClick={() => setDialog(true)}>Add</button>
-        </div>
-      </div>
-      <div>
-        <table>
-          <tr>
-            <th>Company</th>
-            <th>Position</th>
-            <th>Link</th>
-            <th>Close Date</th>
-          </tr>
-          {renderData()}
-        </table>
-      </div>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Company</TableCell>
+              <TableCell>Position</TableCell>
+              <TableCell>Link</TableCell>
+              <TableCell>Close Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{renderData()}</TableBody>
+        </Table>
+      </Container>
     </Fragment>
   );
 };
