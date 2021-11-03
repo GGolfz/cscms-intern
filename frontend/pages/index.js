@@ -6,61 +6,127 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
+  Typography,
 } from "@material-ui/core";
 import { Fragment, useEffect, useRef, useState } from "react";
 import FormDialog from "../components/Dialog";
 const Home = () => {
-  const data = [
-    {
-      id: 1,
-      company_name: "Google",
-      url: "https://www.google.com",
-      positions: ["Full Stack Developer", "ML Engineer"],
-      close_date: null,
-    },
-  ];
+  const [data, setData] = useState([]);
   const [showData, setShowData] = useState([]);
+  const [search, setSearch] = useState("");
   const [dialog, setDialog] = useState(false);
   useEffect(() => {
-    setShowData(data);
+    fetchData();
   }, []);
+  useEffect(() => {
+    setShowData(data);
+  }, [data]);
+  const fetchData = () => {
+    // TODO: Fetch data from API
+  };
+  const handleSearch = () => {
+    const searchData = data.filter(
+      (item) =>
+        item.company_name.toLowerCase().includes(search.toLowerCase()) ||
+        item.positions.filter((pos) =>
+          pos.toLowerCase().includes(search.toLowerCase())
+        ).length > 0
+    );
+    setShowData(searchData);
+  };
   const handleClose = () => {
     setDialog(false);
   };
   const renderData = () => {
-    return showData.map((item) => {
-      return (
-        <TableRow key={item.id}>
-          <TableCell>{item.company_name}</TableCell>
-          <TableCell>
-            <ul>
-              {item.positions.map((e, index) => (
-                <li key={index}>{e}</li>
-              ))}
-            </ul>
+    return showData.length == 0 ? (
+      <Fragment>
+        <TableRow>
+          <TableCell colSpan={4} align="center">
+            No Data Found
           </TableCell>
-          <TableCell>
-            <a href={item.url}>Link</a>
-          </TableCell>
-          <TableCell>{item.close_date ?? "unknown"}</TableCell>
         </TableRow>
-      );
-    });
+      </Fragment>
+    ) : (
+      showData.map((item) => {
+        return (
+          <TableRow key={item.id}>
+            <TableCell>{item.company_name}</TableCell>
+            <TableCell>
+              <ul>
+                {item.positions.map((e, index) => (
+                  <li key={index}>{e}</li>
+                ))}
+              </ul>
+            </TableCell>
+            <TableCell>
+              <a href={item.url}>Link</a>
+            </TableCell>
+            <TableCell>{item.close_date ?? "unknown"}</TableCell>
+          </TableRow>
+        );
+      })
+    );
   };
   return (
     <Fragment>
       <Container>
         <FormDialog dialog={dialog} handleClose={handleClose} />
-
-        <div>Search and filter bar</div>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            margin: "2rem 0",
           }}
         >
-          <h1>Internship List</h1>
+          <TextField
+            id="input-with-icon-textfield"
+            placeholder="Search (Company, Position)"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <svg
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  data-testid="SearchIcon"
+                  style={{ width: "36px", height: "36px", margin: ".5rem" }}
+                >
+                  <path
+                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                    fill="#3f51b5"
+                  ></path>
+                </svg>
+              ),
+            }}
+            variant="standard"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key == "Enter") handleSearch();
+            }}
+          />
+          <Button
+            style={{ margin: "1rem 0 1rem 1rem" }}
+            variant="outlined"
+            onClick={handleSearch}
+            color="primary"
+          >
+            Search
+          </Button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            margin: "2rem 0",
+          }}
+        >
+          <Typography variant="h4" component="h1">
+            Internship List
+          </Typography>
           <Button
             variant="outlined"
             onClick={() => setDialog(true)}
@@ -69,17 +135,26 @@ const Home = () => {
             Add
           </Button>
         </div>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Company</TableCell>
-              <TableCell>Position</TableCell>
-              <TableCell>Link</TableCell>
-              <TableCell>Close Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{renderData()}</TableBody>
-        </Table>
+        <div style={{ height: "65vh", overflow: "auto", marginTop: "65px" }}>
+          <Table>
+            <TableHead
+              style={{
+                position: "sticky",
+                top: "0px",
+                zIndex: "1",
+                background: "white",
+              }}
+            >
+              <TableRow>
+                <TableCell style={{ width: "25%" }}>Company</TableCell>
+                <TableCell style={{ width: "45%" }}>Position</TableCell>
+                <TableCell style={{ width: "15%" }}>Link</TableCell>
+                <TableCell style={{ width: "15%" }}>Close Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{renderData()}</TableBody>
+          </Table>
+        </div>
       </Container>
     </Fragment>
   );
