@@ -96,8 +96,11 @@ func main() {
 			UpdatedAt:   time.Now().UTC(),
 			CompanyName: internshipBody.CompanyName,
 			URL:         internshipBody.URL,
-			CloseDate:   godate.Create(internshipBody.CloseDate).EndOfDay().Time,
 			Positions:   positions,
+		}
+
+		if internshipBody.CloseDate.String() != "0001-01-01T23:59:59.999Z" {
+			internship.CloseDate = &godate.Create(internshipBody.CloseDate).EndOfDay().Time
 		}
 
 		tx := db.Create(internship)
