@@ -54,15 +54,15 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-#   trigger-deployment:
-#     needs: [build-and-push-frontend, build-and-push-backend]
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Trigger Deployment
-#         uses: fjogeleit/http-request-action@v1.8.0
-#         if: ${{ github.event_name != 'pull_request' }}
-#         with:
-#           url: https://api.github.com/repos/thetkpark/cscms-services-deployment/dispatches
-#           method: POST
-#           data: '{"event_type": "cscms-intern"}'
-#           username: ${{secrets.ACCESS_TOKEN}}
+  trigger-deployment:
+    needs: [build-and-push-frontend, build-and-push-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Deployment
+        uses: fjogeleit/http-request-action@v1.8.0
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          url: https://api.github.com/repos/thetkpark/cscms-services-deployment/dispatches
+          method: POST
+          data: '{"event_type": "cscms-intern"}'
+          username: ${{secrets.ACCESS_TOKEN}}
