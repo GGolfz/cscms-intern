@@ -99,7 +99,7 @@ func main() {
 			Positions:   positions,
 		}
 
-		if internshipBody.CloseDate.String() != "0001-01-01T23:59:59.999Z" {
+		if internshipBody.CloseDate.UTC().String() != "0001-01-01 00:00:00 +0000 UTC" {
 			internship.CloseDate = &godate.Create(internshipBody.CloseDate).EndOfDay().Time
 		}
 
