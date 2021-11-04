@@ -6,6 +6,7 @@ import (
 	"github.com/GGolfz/cscms-intern/backend/dto"
 	"github.com/GGolfz/cscms-intern/backend/model"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/hashicorp/go-hclog"
 	"github.com/kofoworola/godate"
 	"gorm.io/driver/mysql"
@@ -46,6 +47,11 @@ func main() {
 			})
 		},
 	})
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST",
+	}))
 
 	app.Get("/api/ping", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{
