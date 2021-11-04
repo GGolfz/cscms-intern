@@ -60,8 +60,8 @@ const Home = () => {
             <TableCell>{item.company_name}</TableCell>
             <TableCell>
               <ul>
-                {item.positions.map((e, index) => (
-                  <li key={index}>{e}</li>
+                {item.positions.map((e) => (
+                  <li key={e.id}>{e.name}</li>
                 ))}
               </ul>
             </TableCell>
