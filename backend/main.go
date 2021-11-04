@@ -115,7 +115,7 @@ func main() {
 	app.Get("/api/internship", func(ctx *fiber.Ctx) error {
 		var internships []model.Internship
 
-		if tx := db.Preload("Positions").Find(&internships); tx.Error != nil {
+		if tx := db.Preload("Positions").Order("close_date desc").Find(&internships); tx.Error != nil {
 			if !errors.Is(tx.Error, gorm.ErrRecordNotFound) {
 				logger.Error("cannot get internship in db", tx.Error.Error())
 				return fiber.NewError(fiber.StatusInternalServerError, "cannot get internship in db", tx.Error.Error())
