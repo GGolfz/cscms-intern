@@ -73,7 +73,7 @@ const Home = () => {
             <TableCell>
               <a href={item.url}>Link</a>
             </TableCell>
-            <TableCell>{item.close_date ?? "unknown"}</TableCell>
+            <TableCell>{item.close_date != null ? item.close_date.split('T')[0] : "unknown"}</TableCell>
           </TableRow>
         );
       })
