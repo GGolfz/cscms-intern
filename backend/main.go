@@ -11,6 +11,7 @@ import (
 	"github.com/kofoworola/godate"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"net/url"
 	"os"
 	"time"
 )
@@ -66,6 +67,12 @@ func main() {
 		if err := ctx.BodyParser(internshipBody); err != nil {
 			logger.Error("cannot parse request body", err.Error())
 			return fiber.NewError(fiber.StatusBadRequest, "cannot parse request body", err.Error())
+		}
+
+		// Check valid URL
+		_, err := url.ParseRequestURI(internshipBody.URL)
+		if err != nil {
+			return fiber.NewError(fiber.StatusBadRequest, "Invalid URL format")
 		}
 
 		positions := make([]*model.Position, len(internshipBody.Positions))
