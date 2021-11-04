@@ -4,6 +4,7 @@ WORKDIR /app
 COPY ./package.json ./package-lock.json ./
 
 RUN npm install
+RUN rm -rf /app/node_modules/@next/swc-linux-x64-gnu
 
 COPY ./ ./
 
