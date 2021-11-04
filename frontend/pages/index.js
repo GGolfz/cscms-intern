@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
+import Head from 'next/head'
 import FormDialog from "../components/Dialog";
 const Home = () => {
   const [data, setData] = useState([]);
@@ -81,6 +82,9 @@ const Home = () => {
   };
   return (
     <Fragment>
+      <Head>
+        <title>CSCMS Internship Collection</title>
+      </Head>
       <Container>
         <FormDialog dialog={dialog} handleClose={handleClose} />
         <div
