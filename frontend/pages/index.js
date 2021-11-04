@@ -24,16 +24,21 @@ const Home = () => {
     setShowData(data);
   }, [data]);
   const fetchData = () => {
-    axios.get("/api/internship").then((res) => {
-      setData(res.data);
-    });
+    axios
+      .get("/api/internship")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleSearch = () => {
     const searchData = data.filter(
       (item) =>
         item.company_name.toLowerCase().includes(search.toLowerCase()) ||
         item.positions.filter((pos) =>
-          pos.toLowerCase().includes(search.toLowerCase())
+          pos.name.toLowerCase().includes(search.toLowerCase())
         ).length > 0
     );
     setShowData(searchData);
