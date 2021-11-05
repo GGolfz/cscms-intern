@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import axios from "axios";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Head from "next/head";
 import FormDialog from "../components/Dialog";
 
@@ -31,7 +31,7 @@ const Home = ({ searchString }) => {
   }, [data]);
   const fetchData = () => {
     axios
-      .get("https://intern.cscms.me/api/internship")
+      .get("/api/internship")
       .then((res) => {
         setData(res.data);
       })
