@@ -15,22 +15,40 @@ const Form = ({ dialog, handleClose }) => {
   const [positions, setPositions] = useState([]);
   const [position, setPosition] = useState("");
   const [url, setUrl] = useState("");
+  const [urlError, seturlError] = useState(false);
   const [closeDate, setCloseDate] = useState(undefined);
 
   const handleAdd = () => {
     if (companyName.length > 0 && url.length > 0 && positions.length > 0) {
-      const data = {
-        company_name: companyName,
-        positions,
-        url,
-        close_date:
-          closeDate == undefined ? null : new Date(closeDate).toISOString(),
-      };
-      axios.post("/api/internship", data).then((res) => {
-        clearData();
-        handleClose({fetched:true});
-      });
+      if (validateURL(url)) {
+        seturlError(false);
+        const data = {
+          company_name: companyName,
+          positions,
+          url,
+          close_date:
+            closeDate == undefined ? null : new Date(closeDate).toISOString(),
+        };
+        axios.post("/api/internship", data).then((res) => {
+          clearData();
+          handleClose({ fetched: true });
+        });
+      } else {
+        seturlError(true);
+      }
     }
+  };
+  const validateURL = (url) => {
+    var pattern = new RegExp(
+      "^(https?:\\/\\/)|(http?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i"
+    ); // fragment locator
+    return !!pattern.test(url);
   };
   const clearData = () => {
     setCompanyName("");
@@ -104,6 +122,8 @@ const Form = ({ dialog, handleClose }) => {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               required
+              error={urlError}
+              helperText={urlError ? "Please enter valid URL" : ""}
             ></TextField>
             <TextField
               fullWidth
