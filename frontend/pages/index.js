@@ -11,22 +11,29 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
-import Head from 'next/head'
+import Head from "next/head";
 import FormDialog from "../components/Dialog";
-const Home = () => {
+import { useRouter } from "next/router";
+
+const Home = ({ searchString }) => {
   const [data, setData] = useState([]);
   const [showData, setShowData] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchString);
   const [dialog, setDialog] = useState(false);
   useEffect(() => {
     fetchData();
+    handleSearch(search);
   }, []);
   useEffect(() => {
-    setShowData(data);
+    if (search == "") {
+      setShowData(data);
+    } else {
+      handleSearch(search);
+    }
   }, [data]);
   const fetchData = () => {
     axios
-      .get("/api/internship")
+      .get("https://intern.cscms.me/api/internship")
       .then((res) => {
         setData(res.data);
       })
@@ -34,7 +41,7 @@ const Home = () => {
         console.log(err);
       });
   };
-  const handleSearch = () => {
+  const handleSearch = (search) => {
     const searchData = data.filter(
       (item) =>
         item.company_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -74,7 +81,11 @@ const Home = () => {
             <TableCell>
               <a href={item.url}>Link</a>
             </TableCell>
-            <TableCell>{item.close_date != null ? item.close_date.split('T')[0] : "unknown"}</TableCell>
+            <TableCell>
+              {item.close_date != null
+                ? item.close_date.split("T")[0]
+                : "unknown"}
+            </TableCell>
           </TableRow>
         );
       })
@@ -173,6 +184,12 @@ const Home = () => {
       </Container>
     </Fragment>
   );
+};
+
+Home.getInitialProps = async (ctx) => {
+  const query = ctx.query;
+  if (query.search) return { searchString: query.search };
+  return { searchString: "" };
 };
 
 export default Home;
