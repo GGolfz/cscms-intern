@@ -21,7 +21,6 @@ const Home = ({ searchString }) => {
   const [dialog, setDialog] = useState(false);
   useEffect(() => {
     fetchData();
-    handleSearch(search);
   }, []);
   useEffect(() => {
     if (search == "") {
