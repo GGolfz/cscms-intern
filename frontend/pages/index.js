@@ -13,7 +13,6 @@ import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import FormDialog from "../components/Dialog";
-import { useRouter } from "next/router";
 
 const Home = ({ searchString }) => {
   const [data, setData] = useState([]);
