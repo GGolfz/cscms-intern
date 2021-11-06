@@ -128,13 +128,13 @@ const Home = ({ searchString }) => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key == "Enter") handleSearch();
+              if (e.key == "Enter") handleSearch(search);
             }}
           />
           <Button
             style={{ margin: "1rem 0 1rem 1rem" }}
             variant="outlined"
-            onClick={handleSearch}
+            onClick={() => handleSearch(search)}
             color="primary"
           >
             Search
