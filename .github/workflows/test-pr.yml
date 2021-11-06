@@ -1,0 +1,27 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches: '**'
+
+jobs:
+  build-and-push-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and push frontend images
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: './frontend'
+          push: false
+          labels: 'test-build-frontend'
+  build-and-push-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build backend images
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: './backend'
+          push: false
+          labels: 'test-build-backend'
