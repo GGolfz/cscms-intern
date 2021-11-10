@@ -77,7 +77,7 @@ const Home = ({ searchString }) => {
               </ul>
             </TableCell>
             <TableCell>
-              <a href={item.url}>Link</a>
+              <a href={item.url} target="_blank">Link</a>
             </TableCell>
             <TableCell>
               {item.close_date != null
