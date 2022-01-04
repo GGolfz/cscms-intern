@@ -121,34 +121,25 @@ func main() {
 
 	app.Get("/api/internship", func(ctx *fiber.Ctx) error {
 		var internships []model.Internship
-		var internshipsNullDate []model.Internship
 
 		// For unclosed internship
-		if tx := db.Preload("Positions").Where("close_date > ?", time.Now().UTC()).Order("close_date asc").Find(&internships); tx.Error != nil {
-			if !errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-				logger.Error("cannot get internship in db", tx.Error.Error())
-				return fiber.NewError(fiber.StatusInternalServerError, "cannot get internship in db", tx.Error.Error())
-			}
+		tx := db.Preload("Positions").
+			Where("close_date > ?", time.Now().UTC()).
+			Or("close_date is null").
+			Order("close_date asc").
+			Find(&internships)
+		if tx.Error != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "cannot get open internship", tx.Error.Error())
 		}
-		// For null close_date
-		if tx := db.Preload("Positions").Where("YEAR(created_at) = YEAR(CURRENT_TIMESTAMP) AND close_date is null").Find(&internshipsNullDate); tx.Error != nil {
-			if !errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-				logger.Error("cannot get internship in db", tx.Error.Error())
-				return fiber.NewError(fiber.StatusInternalServerError, "cannot get internship in db", tx.Error.Error())
-			}
-		}
-		internships = append(internships, internshipsNullDate...)
+
 		return ctx.JSON(internships)
 	})
 
 	app.Get("/api/positions", func(ctx *fiber.Ctx) error {
 		var positions []model.Position
 
-		if tx := db.Find(&positions); tx.Error != nil {
-			if !errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-				logger.Error("cannot get positions in db", tx.Error.Error())
-				return fiber.NewError(fiber.StatusInternalServerError, "cannot get positions in db", tx.Error.Error())
-			}
+		if tx := db.Model(&model.Position{}).Find(&positions); tx.Error != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "cannot get internship", tx.Error.Error())
 		}
 		return ctx.JSON(positions)
 	})
